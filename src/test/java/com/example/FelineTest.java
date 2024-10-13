@@ -2,8 +2,6 @@ package com.example;
 
 import junit.framework.TestCase;
 
-import static org.junit.Assert.assertEquals;
-
 public class FelineTest extends TestCase {
 
     public void testEatMeat() throws Exception {
