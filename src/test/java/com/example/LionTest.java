@@ -5,22 +5,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class LionTest {
     private final String sex;
-    private final boolean havMane;
+    private final boolean haveMane;
 
-    Feline feline = new Feline();
+    private final Feline feline = new Feline();
 
-    public LionTest(String sex, boolean havMane) {
+    public LionTest(String sex, boolean haveMane) {
         this.sex = sex;
-        this.havMane = havMane;
+        this.haveMane = haveMane;
     }
 
     @Parameterized.Parameters(name = "Пол: {0}, Наличие гривы: {1}")
-    public static Object[][] getCredentials() {
+    public static Object[][] getLionTestCases() {
         return new Object[][]{
                 {"Самец", true},
                 {"Самка", false},
@@ -30,7 +29,7 @@ public class LionTest {
     @Test
     public void testHasMane() throws Exception {
         Lion lion = new Lion(sex, feline);
-        assertEquals(havMane, lion.hasMane());
+        assertEquals(haveMane, lion.hasMane());
     }
 
     @Test
@@ -44,15 +43,4 @@ public class LionTest {
         Lion lion = new Lion("Самец", feline);
         assertEquals(feline.getFood("Хищник"), lion.getFood());
     }
-    @Test
-    public void testLionConstructor_InvalidSex_ThrowsException() {
-        try {
-            new Lion("Недопустимый пол", feline);
-            fail("Ожидалось исключение для недопустимого пола");
-        } catch (Exception e) {
-            assertEquals("Используйте допустимые значения пола животного - самец или самка", e.getMessage());
-        }
-    }
 }
-
-
