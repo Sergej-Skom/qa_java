@@ -5,17 +5,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 @RunWith(Parameterized.class)
 public class LionTest {
     private final String sex;
     private final boolean haveMane;
-
-    private final Feline feline = new Feline();
+    private final Feline feline;
 
     public LionTest(String sex, boolean haveMane) {
         this.sex = sex;
         this.haveMane = haveMane;
+        this.feline = new Feline();
     }
 
     @Parameterized.Parameters(name = "Пол: {0}, Наличие гривы: {1}")
@@ -29,7 +30,7 @@ public class LionTest {
     @Test
     public void testHasMane() throws Exception {
         Lion lion = new Lion(sex, feline);
-        assertEquals(haveMane, lion.hasMane());
+        assertEquals(haveMane, lion.doesHaveMane());
     }
 
     @Test
@@ -41,6 +42,12 @@ public class LionTest {
     @Test
     public void testGetFood() throws Exception {
         Lion lion = new Lion("Самец", feline);
-        assertEquals(feline.getFood("Хищник"), lion.getFood());
+        assertEquals(feline.eatMeat(), lion.getFood());
+    }
+
+    @Test
+    public void testInvalidSexThrowsException() {
+        Exception exception = assertThrows(Exception.class, () -> new Lion("Некорректный пол", feline));
+        assertEquals("Используйте допустимые значения пола животного - самец или самка", exception.getMessage());
     }
 }

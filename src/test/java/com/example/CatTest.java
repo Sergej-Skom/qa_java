@@ -11,21 +11,23 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CatTest  {
+public class CatTest {
 
     @Mock
-    Feline feline;
+    Predator predator;
 
     @Test
     public void testGetSound() {
-        var cat = new Cat(new Feline());
+        var cat = new Cat(predator);
         assertEquals("Мяу", cat.getSound());
     }
 
     @Test
     public void testGetFood() throws Exception {
-        when(feline.eatMeat()).thenReturn(List.of("one", "two"));
-        var cat = new Cat(feline);
-        assertEquals(List.of("one", "two"), cat.getFood());
+        List<String> expectedFood = List.of("one", "two");
+        when(predator.eatMeat()).thenReturn(expectedFood);
+
+        var cat = new Cat(predator);
+        assertEquals(expectedFood, cat.getFood());
     }
 }

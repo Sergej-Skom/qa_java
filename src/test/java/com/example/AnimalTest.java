@@ -39,6 +39,7 @@ public class AnimalTest {
         assertEquals("Неизвестный вид животного, используйте значение Травоядное или Хищник",
                 exception.getMessage());
     }
+
     @Test
     public void testGetFood() throws Exception {
         Animal animal = new Animal();
