@@ -1,30 +1,61 @@
 package com.example;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FelineTest {
 
-    @Test
-    public void testEatMeat() throws Exception {
-        Feline feline = new Feline();
-        assertEquals("Животные, Птицы, Рыба", String.join(", ", feline.eatMeat()));
-    }
-    @Test
-    public void testGetFamily() {
-        Feline feline = new Feline();
-        assertEquals("Кошачьи", feline.getFamily());
+    @Spy Feline feline;
+
+    @Parameterized.Parameter(0)
+    public int kittensCount;
+
+    @Parameterized.Parameter(1)
+    public int expectedKittensCount;
+
+    @Parameterized.Parameters public static Object[] getDataKittensCount() {
+        return new Object[][]{
+                {1, 1},
+                {3, 3},
+                {10, 10},
+        };
     }
 
     @Test
-    public void testGetKittens() {
-        Feline feline = new Feline();
-        assertEquals(1, feline.getKittens()); // Тестируем, что по умолчанию возвращается 1 котенок
+    public void getKittensCountReturns() {
+        int actualKittensCount = feline.getKittens(kittensCount);
+        assertEquals(expectedKittensCount, actualKittensCount);
     }
 
     @Test
-    public void testGetKittensWithCount() {
+    public void getEatMeatReturnsForFeline() throws Exception {
+        Mockito.when(feline.getFood("Хищник")).thenReturn(List.of("Животные", "Птицы", "Рыба"));
+        List<String> expectedEatMeat = List.of("Животные", "Птицы", "Рыба");
+        List<String> actualEatMeat = feline.eatMeat();
+        assertEquals(expectedEatMeat, actualEatMeat);
+    }
+
+    @Test
+    public void getFamilyReturnsForFeline() {
         Feline feline = new Feline();
-        assertEquals(3, feline.getKittens(3)); // Тестируем, что можно указать количество котят
+        String actualFamily = feline.getFamily();
+        String expectedFamily = "Кошачьи";
+        assertEquals(expectedFamily, actualFamily);
+    }
+
+    @Test public void getKittensReturnsForFeline() {
+        Mockito.when(feline.getKittens()).thenReturn(1);
+        int actualKittensCount = feline.getKittens();
+        int expectedKittensCount = 1;
+        assertEquals(expectedKittensCount, actualKittensCount);
     }
 }
