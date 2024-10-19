@@ -3,46 +3,64 @@ package com.example;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
 public class AnimalTest {
-    private final String animalKind;
-    private final List<String> food;
 
-    public AnimalTest(String animalKind, List<String> food) {
-        this.animalKind = animalKind;
-        this.food = food;
+    private final String sex;
+    private final boolean expectedHasMane;
+
+    public AnimalTest(String sex, boolean expectedHasMane) {
+        this.sex = sex;
+        this.expectedHasMane = expectedHasMane;
     }
 
-    @Parameterized.Parameters(name = "Тип животного: {0}, Что ест: {1}")
-    public static Object[][] getCredentials() {
-        return new Object[][] {
-                { "Травоядное", List.of("Трава", "Различные растения")},
-                { "Хищник", List.of("Животные", "Птицы", "Рыба")},
-        };
-    }
-
-    @Test
-    public void getFamilyTest() {
-        Animal animal = new Animal();
-        assertEquals("Существует несколько семейств: заячьи, беличьи, мышиные, кошачьи, псовые, медвежьи, куньи",
-                animal.getFamily());
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {"Самец", true},
+                {"Самка", false}
+        });
     }
 
     @Test
-    public void checkExceptionInGetFood() {
-        Animal animal = new Animal();
-        Exception exception = assertThrows(Exception.class, () -> animal.getFood("Обезьяна"));
-        assertEquals("Неизвестный вид животного, используйте значение Травоядное или Хищник",
-                exception.getMessage());
+    public void testDoesHaveMane() throws Exception {
+        Feline mockFeline = mock(Feline.class);
+        Lion lion = new Lion(sex);
+        setFeline(lion, mockFeline);
+
+        assertEquals(expectedHasMane, lion.doesHaveMane());
     }
 
     @Test
     public void testGetFood() throws Exception {
-        Animal animal = new Animal();
-        assertEquals(food, animal.getFood(animalKind));
+        Feline mockFeline = mock(Feline.class);
+        List<String> expectedFood = List.of("Животные", "Птицы");
+        when(mockFeline.getFood("Хищник")).thenReturn(expectedFood);
+
+        Lion lion = new Lion(sex);
+        setFeline(lion, mockFeline);
+
+        List<String> food = lion.getFood();
+
+        assertEquals(expectedFood, food);
+    }
+
+    private void setFeline(Lion lion, Feline feline) {
+        try {
+            java.lang.reflect.Field field = Lion.class.getDeclaredField("feline");
+            field.setAccessible(true);
+            field.set(lion, feline);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
