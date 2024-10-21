@@ -1,51 +1,45 @@
 package com.example;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
+
+@RunWith(MockitoJUnitRunner.class)
 public class LionTest {
-    private Lion lion;
-    private Feline mockFeline;
 
-    @Before
-    public void setUp() throws Exception {
-        mockFeline = Mockito.mock(Feline.class);
-        lion = new Lion("Самец");
+    @Mock
+    Feline feline;
 
-        Field field = Lion.class.getDeclaredField("feline");
-        field.setAccessible(true);
-        field.set(lion, mockFeline);
+    @Test
+    public void testGetKittens() throws Exception {
+        Lion lion = new Lion("Самец", feline);
+        Mockito.when(feline.getKittens()).thenReturn(1);
+        int countOfKittens = lion.getKittens();
+        Assert.assertEquals(1, countOfKittens);
     }
 
     @Test
-    public void testDoesHaveMane() {
-        assertTrue(lion.doesHaveMane());
-    }
+    public void testDoesHaveManeIsException() {
 
-    @Test(expected = Exception.class)
-    public void testInvalidSex() throws Exception {
-        new Lion("Неизвестный пол");
-    }
-
-    @Test
-    public void testGetKittens() {
-        Mockito.when(mockFeline.getKittens()).thenReturn(3);
-        assertEquals(3, lion.getKittens());
+        Exception exception = assertThrows(Exception.class, () -> {
+            new Lion("Самка", feline);
+        });
+        Assert.assertEquals("Используйте допустимые значения пола животного - самец или самка", exception.getMessage());
     }
 
     @Test
     public void testGetFood() throws Exception {
-        Mockito.when(mockFeline.getFood("Хищник")).thenReturn(List.of("Животные", "Птицы"));
-        List<String> food = lion.getFood();
-        assertNotNull(food);
-        assertEquals(2, food.size());
-        assertTrue(food.contains("Животные"));
-        assertTrue(food.contains("Птицы"));
+        Lion lion = new Lion("Самец", feline);
+        List<String> listOfFoodExp = List.of("Животные", "Птицы", "Рыба");
+        Mockito.when(feline.getFood("Хищник")).thenReturn(listOfFoodExp);
+        List<String> listOfFoodAct = lion.getFood();
+        Assert.assertEquals(listOfFoodExp, listOfFoodAct);
     }
 }

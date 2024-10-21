@@ -15,8 +15,7 @@ public class FelineTest {
         feline = new Feline();
     }
 
-    @Test
-    public void testEatMeat() throws Exception {
+    @Test public void testEatMeat() throws Exception {
         List<String> food = feline.eatMeat();
         assertNotNull(food);
         assertEquals(3, food.size());
@@ -25,18 +24,15 @@ public class FelineTest {
         assertTrue(food.contains("Рыба"));
     }
 
-    @Test
-    public void testGetFamily() {
+    @Test public void testGetFamily() {
         assertEquals("Кошачьи", feline.getFamily());
     }
 
-    @Test
-    public void testGetKittens() {
+    @Test public void testGetKittens() {
         assertEquals(1, feline.getKittens());
     }
 
-    @Test
-    public void testGetKittensWithParameter() {
+    @Test public void testGetKittensWithParameter() {
         assertEquals(5, feline.getKittens(5));
     }
 }
